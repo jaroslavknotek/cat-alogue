@@ -1,0 +1,6 @@
+streamlit
+pandas
+imageio
+thefuzz
+matplotlib
+numpy
