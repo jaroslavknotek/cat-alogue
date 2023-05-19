@@ -6,6 +6,7 @@ Selected cat can be edited within a detail page.
 
 # Preparation
 
+Install python. The project was tested with python 3.10.9
 
 ## Get the code
 
@@ -40,10 +41,4 @@ python -m pip install -r requirements.txt
 ```
 python -m streamlit run ui.py
 ```
-
-
-
-
-
-
 
