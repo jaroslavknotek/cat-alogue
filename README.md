@@ -36,9 +36,17 @@ Scripts/activate.bat
 python -m pip install -r requirements.txt
 ```
 
-# Execute Application
+# Application
 
+Start application with:
 ```
 python -m streamlit run ui.py
 ```
+
+You will see home page with a list of cats with their picture, name, sex and
+age. You can use search bar to find top-5 matches with your query. 
+
+A detail of a cat can be shown by clicking on a cat picture. This will open
+another page with a form, where you can edit and save cat information.
+
 
