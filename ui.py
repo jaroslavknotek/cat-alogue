@@ -10,7 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 st.set_page_config(initial_sidebar_state="collapsed")
 
 
-@st.cache_data
+# @st.cache_resource
 def load_data():
     return utils.load_data()
 
@@ -139,6 +139,7 @@ with st.form("Form 3", clear_on_submit=True):
         else:
             st.success("Congr")
             add_cat(name, sex, age)
+            st.experimental_rerun()
 
 
 with st.form("Form 4", clear_on_submit=True):
@@ -148,7 +149,6 @@ with st.form("Form 4", clear_on_submit=True):
     name = pet_name.text_input("Name")
     sex = pet_sex.text_input("Sex")
     age = pet_age.text_input("Age")
-    print(type(age))
     s_state = st.form_submit_button("Submit")
 
     if s_state:
