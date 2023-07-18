@@ -14,7 +14,7 @@ Option 1: use `git`
 ```
 cd <location>
 git clone https://github.com/jaroslavknotek/cat-alogue.git
-cv cat-alogue
+cd cat-alogue
 ```
 
 Option 2: download [this archive](https://github.com/jaroslavknotek/cat-alogue/archive/refs/heads/master.zip) and extract it to `<location>`.
