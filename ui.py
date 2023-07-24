@@ -1,6 +1,7 @@
 import utils, time
 import pandas as pd
 from pydantic import HttpUrl
+import httpx
 
 import streamlit as st 
 from utils import CatModel 
@@ -27,6 +28,13 @@ def create_row(row,record):
         st.header(record.name)
         st.write(record.sex)
         st.write(record.age)
+        
+def delete_cat(df, record):
+    df = df[df.index != record.Index]
+    df = df.reset_index(drop=True)
+    st.success("Cat deleted successfully!")
+    utils.save_data(df)
+    return df
 
 def custom_write_df(df):
     for record in df.itertuples():
@@ -34,14 +42,18 @@ def custom_write_df(df):
             row = st.columns(1)
             minus = st.empty()
             if minus.button(":heavy_minus_sign:", key=record):
-                df = df[df.index != record.Index]
-                df = df.reset_index(drop=True)
-                st.success("Cat deleted successfully!")
-                utils.save_data(df)
+                delete_cat(df, record)
                 minus.empty()
                 continue
             create_row(row,record)
     return df
+
+def is_valid_url(url):
+    try:
+        response = httpx.head(url)
+        return response.status_code == 200
+    except httpx.HTTPError:
+        return False
 
 def submitted():
     st.session_state.submitted = True
@@ -59,17 +71,21 @@ if st.button(":heavy_plus_sign:"):
         age = st.number_input("Age", key="age")
         image = st.text_input("URL Image", key="image")
         st.form_submit_button(label="Add Cat", on_click=submitted)
-if 'submitted' in st.session_state:
-    if st.session_state.submitted == True:
-        try:
+        
+if st.session_state.get('submitted', False):
+    try:
+        if is_valid_url(st.session_state.image):
             cat = CatModel(name=st.session_state.name, sex=st.session_state.sex, age=float(st.session_state.age), img_uri=HttpUrl(st.session_state.image))
-            df = df.drop(columns=['_concatenated'])
+            df = utils.drop_concatenated(df)
             df.loc[len(df.index)] = [cat.name, cat.sex, cat.age, cat.img_uri]
-            df['_concatenated'] = pd.Series(df.astype(str).fillna('').values.tolist()).str.join(' ')
+            df = utils.concatenated_column(df)
             success = st.success("New cat added successfully!")
             utils.save_data(df)
-        except: st.error("Something went wrong. You probably didn't fill in the url button.")
-        reset()
+        else:
+            st.error("Invalid URL. Please provide a valid URL for the image.")
+    except: 
+        st.error("Something went wrong.")
+    reset()
 
 if query is None or query.strip() == "":
     # print all cats

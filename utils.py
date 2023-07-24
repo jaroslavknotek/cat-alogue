@@ -33,14 +33,21 @@ def search_all(df, query, top_n = 5):
         
     return df.iloc[ids]
     
+def concatenated_column(df):
+    df['_concatenated'] = pd.Series(df.astype(str).fillna('').values.tolist()).str.join(' ')
+    return df
+
+def drop_concatenated(df):
+    df = df.drop(columns=['_concatenated'])
+    return df
 
 def load_data():
     df = pd.read_csv('data.csv')
     # create column for fuzzy search
-    df['_concatenated'] = pd.Series(df.astype(str).fillna('').values.tolist()).str.join(' ')
+    df = concatenated_column(df)
     return df
 
 def save_data(df):
     # drop the column so it doesn't pollute the search
-    df = df.drop(columns=['_concatenated'])
+    df = drop_concatenated(df)
     df.to_csv('data.csv', index=False)
